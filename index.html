@@ -243,7 +243,7 @@ nav button .cnt{background:var(--acc);color:#111;border-radius:20px;padding:0 7p
 </div>
 
 <div class="cm" id="cm"><div class="cm-box"><button class="cm-x" id="cmX">✕</button><div id="cmBody"></div></div></div>
-<div class="ver">Version 0.1 · Open Beta</div>
+<div class="ver">Version 0.2 · Open Beta</div>
 
 <div class="ov" id="ov">
   <div class="glowbg"></div>
@@ -283,23 +283,23 @@ const WEAP={
  pistol:['Glock-18','USP-S','Desert Eagle','P250','Five-SeveN','Tec-9','R8 Revolver','CZ75'],
  smg:['MP9','MAC-10','P90','UMP-45','MP7','PP-Bizon'],
  shotgun:['Nova','XM1014','MAG-7','Sawed-Off'],
- knife:['★ Karambit','★ Butterfly-Messer','★ Bajonett','★ Klappmesser','★ Jagdmesser','★ Talon-Messer','★ Skelett-Messer','★ Ursus-Messer']
+ knife:['★ Karambit','★ Butterfly Knife','★ Bayonet','★ Flip Knife','★ Huntsman Knife','★ Talon Knife','★ Skeleton Knife','★ Ursus Knife']
 };
 const LEG={rifle:['AK-47','M4A4','M4A1-S'],sniper:['AWP'],pistol:['Desert Eagle','USP-S']};
 const POOLS=[['pistol','smg','shotgun','pistol','smg','rifle'],['pistol','smg','rifle','shotgun','sniper'],['rifle','smg','pistol','sniper'],['rifle','sniper','pistol','rifle'],['rifle','sniper','pistol'],['knife']];
 const PATS=[['none','camo','stripes','none'],['camo','stripes','dots','waves'],['hex','waves','tiger','stripes','dots'],['fade','hex','tiger','waves'],['fade','hex','tiger','fade'],['fade','rainbow']];
 const CASES=[
- {name:'Gratis-Kiste',price:0,ev:2,icon:'🎁',pal:['#5b6470','#9aa5b1','#3c4450','#c9b38a'],words:['Rostschutz','Betongrau','Sandsack','Militärgrün','Altmetall','Bunker','Kreidestaub','Schrottplatz','Nebelwand','Asphalt','Feldgrau','Werkbank']},
- {name:'Dschungel',price:10,icon:'🌴',pal:['#1f7a3a','#7bd36b','#0e3d22','#d8c24a'],words:['Dschungelfieber','Lianen','Giftfrosch','Regenwald','Mamba','Tukan','Mangrove','Smaragdmoos','Jaguar','Urwaldnebel','Bambus','Orchidee']},
- {name:'Wüstensturm',price:25,icon:'🏜️',pal:['#c9963f','#f2d28b','#7a4f1d','#e2683c'],words:['Wüstensturm','Skorpion','Dünenwind','Kamelhaar','Oase','Sonnenbrand','Pharao','Kaktusblüte','Fata Morgana','Sandviper','Bernstein','Glutsand']},
- {name:'Frostbiss',price:50,icon:'❄️',pal:['#5ad1ff','#e6f8ff','#2a6fbf','#9ab8ff'],words:['Frostbiss','Gletscher','Polarlicht','Eiszapfen','Schneesturm','Kristallherz','Yeti','Permafrost','Arktisfuchs','Blizzard','Raureif','Eisblau']},
- {name:'Neon-Nacht',price:100,icon:'🌃',pal:['#ff2fd6','#21f6ff','#5b1bff','#fff04a'],words:['Neonflut','Synthwave','Laserpuls','Nachtclub','Glitch','Arcade','Hologramm','Pixelregen','Leuchtreklame','Bassdrop','Vaporwave','Stroboskop']},
- {name:'Vulkan',price:250,icon:'🌋',pal:['#ff4a12','#ffb21f','#3a0a05','#ff1f4f'],words:['Lavakern','Magma','Ascheregen','Feuerdrache','Glutofen','Eruption','Obsidian','Höllenfeuer','Schwefel','Phönix','Inferno','Brandmal']},
- {name:'Ozeantiefe',price:500,icon:'🌊',pal:['#0aa3a3','#063a6b','#4ff0d0','#f5e6c8'],words:['Tiefsee','Kraken','Korallenriff','Tsunami','Perlmutt','Haibiss','Leviathan','Seemannsgarn','Gezeiten','Atlantis','Quallenlicht','Abgrund']},
- {name:'Cyber-Drache',price:1000,icon:'🐉',pal:['#39ff88','#7a2cff','#0b0f1a','#00e0ff'],words:['Cyber-Drache','Neuronetz','Quantum','Datenstrom','Mecha','Firewall','Nanobot','Overclock','Kernschmelze','Androide','Hackerangriff','Mainframe']},
- {name:'Galaxie',price:2500,icon:'🌌',pal:['#2b1265','#c86bff','#ff7ae0','#5fd0ff'],words:['Sternenstaub','Supernova','Nebula','Schwarzes Loch','Kometenschweif','Andromeda','Polarstern','Ereignishorizont','Mondfinsternis','Kosmos','Pulsar','Milchstraße']},
- {name:'Goldrausch',price:5000,icon:'👑',pal:['#ffcc33','#7a5200','#fff2b0','#1a1a1a'],words:['Goldrausch','Königskrone','Midas','Juwelier','Diamantstaub','Tresor','Imperator','Goldbarren','Saphir','Zepter','Schatzkammer','Elixier']},
- {name:'Unendlichkeit',price:10000,icon:'♾️',pal:['#ffffff','#ff7ae0','#5fd0ff','#ffe066'],words:['Unendlichkeit','Prisma','Ewigkeit','Regenbogen','Aurora','Himmelstor','Absolut','Omega','Zeitlos','Zenit','Genesis','Ursprung']},
+ {name:'Gratis-Kiste',price:0,ev:2,icon:'🎁',pal:['#5b6470','#9aa5b1','#3c4450','#c9b38a'],words:['Rust Guard','Concrete Gray','Sandbag','Military Green','Scrap Metal','Bunker','Chalk Dust','Junkyard','Smoke Wall','Asphalt','Field Gray','Workbench']},
+ {name:'Dschungel',price:10,icon:'🌴',pal:['#1f7a3a','#7bd36b','#0e3d22','#d8c24a'],words:['Jungle Fever','Vines','Poison Frog','Rainforest','Mamba','Toucan','Mangrove','Emerald Moss','Jaguar','Jungle Mist','Bamboo','Orchid']},
+ {name:'Wüstensturm',price:25,icon:'🏜️',pal:['#c9963f','#f2d28b','#7a4f1d','#e2683c'],words:['Desert Storm','Scorpion','Dune Wind','Camel Hair','Oasis','Sunburn','Pharaoh','Cactus Bloom','Mirage','Sand Viper','Amber','Hot Sand']},
+ {name:'Frostbiss',price:50,icon:'❄️',pal:['#5ad1ff','#e6f8ff','#2a6fbf','#9ab8ff'],words:['Frostbite','Glacier','Northern Lights','Icicle','Snowstorm','Crystal Heart','Yeti','Permafrost','Arctic Fox','Blizzard','Hoarfrost','Ice Blue']},
+ {name:'Neon-Nacht',price:100,icon:'🌃',pal:['#ff2fd6','#21f6ff','#5b1bff','#fff04a'],words:['Neon Flood','Synthwave','Laser Pulse','Nightclub','Glitch','Arcade','Hologram','Pixel Rain','Neon Sign','Bass Drop','Vaporwave','Strobe']},
+ {name:'Vulkan',price:250,icon:'🌋',pal:['#ff4a12','#ffb21f','#3a0a05','#ff1f4f'],words:['Lava Core','Magma','Ash Rain','Fire Dragon','Furnace','Eruption','Obsidian','Hellfire','Sulfur','Phoenix','Inferno','Branded']},
+ {name:'Ozeantiefe',price:500,icon:'🌊',pal:['#0aa3a3','#063a6b','#4ff0d0','#f5e6c8'],words:['Deep Sea','Kraken','Coral Reef','Tsunami','Mother of Pearl','Shark Bite','Leviathan','Sailor\'s Tale','Tides','Atlantis','Jellyfish Glow','Abyss']},
+ {name:'Cyber-Drache',price:1000,icon:'🐉',pal:['#39ff88','#7a2cff','#0b0f1a','#00e0ff'],words:['Cyber Dragon','Neural Net','Quantum','Data Stream','Mecha','Firewall','Nanobot','Overclock','Meltdown','Android','Hack Attack','Mainframe']},
+ {name:'Galaxie',price:2500,icon:'🌌',pal:['#2b1265','#c86bff','#ff7ae0','#5fd0ff'],words:['Stardust','Supernova','Nebula','Black Hole','Comet Tail','Andromeda','North Star','Event Horizon','Lunar Eclipse','Cosmos','Pulsar','Milky Way']},
+ {name:'Goldrausch',price:5000,icon:'👑',pal:['#ffcc33','#7a5200','#fff2b0','#1a1a1a'],words:['Gold Rush','Royal Crown','Midas','Jeweler','Diamond Dust','Vault','Emperor','Gold Bar','Sapphire','Scepter','Treasury','Elixir']},
+ {name:'Unendlichkeit',price:10000,icon:'♾️',pal:['#ffffff','#ff7ae0','#5fd0ff','#ffe066'],words:['Infinity','Prism','Eternity','Rainbow','Aurora','Heaven\'s Gate','Absolute','Omega','Timeless','Zenith','Genesis','Origin']},
 ];
 const WEAR=[{n:'Fabrikneu',s:'FN',m:1.25,p:.1},{n:'Kaum benutzt',s:'MW',m:1.1,p:.2},{n:'Einsatzerprobt',s:'FT',m:1,p:.4},{n:'Abgenutzt',s:'WW',m:.85,p:.18},{n:'Kampfspuren',s:'BS',m:.7,p:.12}];
 const FREE_CD=30000;

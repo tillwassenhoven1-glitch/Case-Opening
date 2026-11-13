@@ -7,7 +7,7 @@ Ein Case-Opening-Spiel im Browser – Kisten öffnen, seltene Skins ziehen, verk
 👉 https://tillwassenhoven1-glitch.github.io/Case-Opening/
 
 Keine Installation, kein Konto nötig – läuft auf Handy, iPad und PC. 🎮
-Version 0.1 · Open Beta
+Version 0.2 · Open Beta
 
 ## So funktioniert's
 
