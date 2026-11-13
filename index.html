@@ -192,6 +192,24 @@ nav button .cnt{background:var(--acc);color:#111;border-radius:20px;padding:0 7p
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#16203a;border:1px solid var(--line);padding:10px 18px;border-radius:10px;z-index:200;animation:tin .3s ease;font-size:16px}
 @keyframes tin{from{transform:translate(-50%,20px);opacity:0}}
 .ver{position:fixed;left:10px;bottom:8px;z-index:50;font-size:12px;color:var(--mut);background:rgba(10,13,22,.75);border:1px solid var(--line);padding:3px 9px;border-radius:7px;pointer-events:none}
+.cm{position:fixed;inset:0;z-index:150;background:rgba(3,5,10,.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}
+.cm.show{display:flex}
+.cm-box{position:relative;background:linear-gradient(180deg,#161c30,#0f1424);border:1px solid var(--line);border-radius:16px;padding:20px;width:100%;max-width:540px;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:newin .25s ease}
+.cm-x{position:absolute;top:10px;right:10px;background:var(--p2);width:34px;height:34px;border-radius:8px}
+.cm h2{font-size:22px;margin-bottom:6px}
+.cm h4{margin:16px 0 7px;color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:1px}
+.cm .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cm .row button,.cm input{background:var(--p2);border:1px solid var(--line);padding:8px 12px;border-radius:9px;font-size:14px;color:var(--txt);font-family:inherit;font-weight:700}
+.cm .row button:hover{border-color:#4a5682}
+.cm .row button.on{border-color:var(--acc);background:#3a2a10;color:#ffcf80}
+.cm .row button.rar{border-color:var(--rc);color:var(--rc)}
+.cm .row button.rar.on{background:var(--rc);color:#111}
+.cm .row button.red{border-color:#a3223f;color:#ffb3c2}
+.cm input{width:150px}
+.cm .code{width:100%;font-size:22px;text-align:center;letter-spacing:4px;margin:10px 0}
+.cm .go{width:100%;background:linear-gradient(180deg,#ffb21f,#ff6a00)!important;color:#1a0d00!important;font-size:17px!important;padding:12px!important}
+.cm .err{color:#ff5470;font-size:14px;min-height:20px;margin-top:8px;text-align:center}
+.cm .cm-sub{color:var(--mut);font-size:14px}
 .hidden{display:none!important}
 @media(max-width:640px){
  .logo{font-size:19px}.bal b{font-size:18px}nav{order:5;width:100%;margin:0}
@@ -209,6 +227,7 @@ nav button .cnt{background:var(--acc);color:#111;border-radius:20px;padding:0 7p
       <button data-tab="stats">📊 Statistik</button>
     </nav>
     <div class="spacer"></div>
+    <button class="tog" id="tCheat" title="Cheat-Menü">🔑</button>
     <button class="tog" id="tFast" title="Schnelles Öffnen">⚡ Schnell</button>
     <button class="tog on" id="tSnd" title="Sound">🔊 Sound</button>
     <div class="bal inv"><small>Inventar</small><b id="invVal">0 $</b></div>
@@ -223,6 +242,7 @@ nav button .cnt{background:var(--acc);color:#111;border-radius:20px;padding:0 7p
   <main id="vStats" class="hidden"></main>
 </div>
 
+<div class="cm" id="cm"><div class="cm-box"><button class="cm-x" id="cmX">✕</button><div id="cmBody"></div></div></div>
 <div class="ver">Version 0.1 · Open Beta</div>
 
 <div class="ov" id="ov">
@@ -249,12 +269,12 @@ nav button .cnt{background:var(--acc);color:#111;border-radius:20px;padding:0 7p
 <script>
 /* ================== DATA ================== */
 const RAR=[
- {name:'Gewöhnlich',  color:'#a7b0bf',p:.55, mult:.15},
- {name:'Selten',      color:'#4b8bff',p:.25, mult:.45},
- {name:'Super selten',color:'#9b5cff',p:.12, mult:1.2},
- {name:'Episch',      color:'#ff3fd8',p:.055,mult:3},
- {name:'Legendär',    color:'#ff3b3b',p:.02, mult:8},
- {name:'Mythisch',    color:'#ffc400',p:.005,mult:30},
+ {name:'Gewöhnlich',  color:'#a7b0bf',p:.45, mult:.15},
+ {name:'Selten',      color:'#4b8bff',p:.27, mult:.45},
+ {name:'Super selten',color:'#9b5cff',p:.15, mult:1.2},
+ {name:'Episch',      color:'#ff3fd8',p:.08, mult:3},
+ {name:'Legendär',    color:'#ff3b3b',p:.04, mult:6},
+ {name:'Mythisch',    color:'#ffc400',p:.01, mult:22},
 ];
 const COUNTS=[6,5,4,3,2,2];
 const WEAP={
@@ -348,7 +368,7 @@ function crateSVG(cs){
 
 /* ================== STATE ================== */
 const KEY='caserush_v1';
-let S={bal:50,inv:[],lastFree:0,hist:[],uid:1,fast:false,snd:true,st:{opened:0,spent:0,won:0,sold:0,rc:[0,0,0,0,0,0],best:null}};
+let S={bal:50,inv:[],lastFree:0,hist:[],uid:1,fast:false,snd:true,cheat:false,luck:1,force:null,forceAlways:false,inf:false,st:{opened:0,spent:0,won:0,sold:0,rc:[0,0,0,0,0,0],best:null}};
 try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&typeof d.bal==='number')S=Object.assign(S,d)}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const tpl=i=>CASES[i.ci].items[i.ii];
@@ -383,7 +403,7 @@ function renderHist(){
  if(!S.hist.length){h.innerHTML='<div class="empty">🕹️ Deine letzten Drops erscheinen hier – öffne eine Kiste!</div>';return}
  h.innerHTML=S.hist.map(x=>{const t=CASES[x.ci].items[x.ii];return `<div class="h" style="--rc:${RAR[t.r].color}" title="${t.w} | ${t.n}">${svgFor(t)}<i>${t.n}</i></div>`}).join('');
 }
-function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
+function toast(m){document.querySelectorAll('.toast').forEach(t=>t.remove());const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
 
 /* ================== TABS ================== */
 let tab='cases',curCase=null,spinning=false;
@@ -399,7 +419,7 @@ function show(t){
 }
 
 /* ================== CASE LIST ================== */
-function freeLeft(){return Math.max(0,FREE_CD-(Date.now()-S.lastFree))}
+function freeLeft(){if(S.inf)return 0;return Math.max(0,FREE_CD-(Date.now()-S.lastFree))}
 function renderCases(){
  $('#vCases').innerHTML=`<div class="sec-title"><h2>Kisten</h2><span>${CASES.length} Kisten · ${CASES.reduce((a,c)=>a+c.items.length,0)} verschiedene Skins</span></div>
  <div class="cases">${CASES.map((cs,i)=>`<div class="case" data-i="${i}" style="--cc:${cs.pal[0]}">
@@ -429,9 +449,9 @@ function openCaseView(i){
  $('#vCase').innerHTML=`<div class="cv-top"><button class="back" id="backBtn">← Zurück</button>${crateSVG(cs)}<h2>${cs.name}</h2><span class="hint">${cs.price?fmt(cs.price):'Gratis alle 30 Sek.'}</span></div>
  <div class="reelbox" id="reelbox"><div class="reel" id="reel"></div><div class="marker"></div></div>
  <div class="openrow"><button class="openbtn ${cs.price?'':'free'}" id="openBtn"></button><span class="hint" id="openHint"></span></div>
- <div class="odds">${RAR.map(r=>`<div class="odd" style="--rc:${r.color}"><b>${r.name}</b> ${(r.p*100).toLocaleString('de-DE')} %</div>`).join('')}</div>
+ <div class="odds">${probs().map((p,i)=>`<div class="odd" style="--rc:${RAR[i].color}"><b>${RAR[i].name}</b> ${(p*100).toLocaleString('de-DE',{maximumFractionDigits:2})} %</div>`).join('')}${S.luck>1?`<div class="odd" style="--rc:#3ddc84"><b>🍀 Glück ×${S.luck}</b></div>`:''}${S.force!=null?`<div class="odd" style="--rc:${RAR[S.force].color}"><b>🎯 ${S.forceAlways?'Immer':'Nächster'}: ${RAR[S.force].name}</b></div>`:''}</div>
  <div class="sec-title"><h2>Inhalt</h2><span>${cs.items.length} Skins</span></div>
- <div class="grid">${items.map(t=>cardHTML(t,`<div class="cfoot"><span class="cval">≈ ${fmt(t.v)}</span><span class="cch">${(RAR[t.r].p/COUNTS[t.r]*100).toLocaleString('de-DE',{maximumFractionDigits:3})} %</span></div>`)).join('')}</div>`;
+ <div class="grid">${items.map(t=>cardHTML(t,`<div class="cfoot"><span class="cval">≈ ${fmt(t.v)}</span><span class="cch">${(probs()[t.r]/COUNTS[t.r]*100).toLocaleString('de-DE',{maximumFractionDigits:3})} %</span></div>`)).join('')}</div>`;
  $('#backBtn').onclick=()=>{if(!spinning)show('cases')};
  $('#openBtn').onclick=()=>openCase();
  fillReel(null);
@@ -441,11 +461,13 @@ function updOpenBtn(){
  const cs=CASES[curCase],b=$('#openBtn');if(!b)return;
  if(!cs.price){updFree();return}
  b.textContent=`🔓 Öffnen · ${fmt(cs.price)}`;
- b.disabled=spinning||S.bal<cs.price;
- $('#openHint').textContent=S.bal<cs.price&&!spinning?'Nicht genug Guthaben – verkauf Skins oder nimm die Gratis-Kiste!':'';
+ b.disabled=spinning||(!S.inf&&S.bal<cs.price);
+ $('#openHint').textContent=!S.inf&&S.bal<cs.price&&!spinning?'Nicht genug Guthaben – verkauf Skins oder nimm die Gratis-Kiste!':'';
 }
+function probs(){const L=S.luck||1,w=RAR.map((r,i)=>r.p*(i>=3?L:1)),s=w.reduce((a,b)=>a+b,0);return w.map(x=>x/s)}
 function rollRarity(boost){
- const w=RAR.map((r,i)=>r.p*(boost&&i>=3?4:1)),s=w.reduce((a,b)=>a+b,0);let x=Math.random()*s;
+ if(!boost&&S.force!=null){const f=S.force;if(!S.forceAlways)S.force=null;return f}
+ const w=boost?RAR.map((r,i)=>r.p*(i>=3?4:1)):probs(),s=w.reduce((a,b)=>a+b,0);let x=Math.random()*s;
  for(let i=0;i<w.length;i++){if((x-=w[i])<0)return i}return 0;
 }
 function rollItem(ci,boost){const ri=rollRarity(boost),arr=CASES[ci].items.filter(t=>t.r===ri);return arr[Math.floor(Math.random()*arr.length)]}
@@ -467,7 +489,7 @@ function fillReel(win){
 }
 function openCase(){
  if(spinning)return;const ci=curCase,cs=CASES[ci];
- if(cs.price){if(S.bal<cs.price)return;S.bal=r2(S.bal-cs.price);S.st.spent+=cs.price}
+ if(cs.price){if(!S.inf){if(S.bal<cs.price)return;S.bal=r2(S.bal-cs.price);S.st.spent+=cs.price}}
  else{if(freeLeft()>0)return;S.lastFree=Date.now()}
  ac();
  const t=rollItem(ci,false);
@@ -513,7 +535,7 @@ async function reveal(inst){
  $('#rvSub').innerHTML=`${WEAR[inst.w].n}${inst.kc?' · <span class="kc2">⚡ KillCounter</span>':''}`;
  $('#rvVal').textContent=fmt(0);
  $('#bSell').textContent=`💰 Verkaufen ${fmt(v)}`;
- const cs=CASES[curCase];$('#bAgain').classList.toggle('hidden',!(cs.price?S.bal>=cs.price:freeLeft()===0));
+ const cs=CASES[curCase];$('#bAgain').classList.toggle('hidden',!(cs.price?(S.inf||S.bal>=cs.price):freeLeft()===0));
  startFx();
  if(ri>=4){ov.classList.add('sus');sRiser(ri);await wait(ri===5?1800:1000);ov.classList.remove('sus')}
  ov.classList.add('go');
@@ -602,13 +624,58 @@ function renderStats(){
  ${st.best?`<div class="sec-title"><h2>🏆 Bester Drop</h2></div><div class="grid" style="max-width:220px">${cardHTML(tpl(st.best),`<div class="cfoot"><span class="cval">${fmt(val(st.best))}</span></div>`,st.best)}</div>`:''}
  <div class="rbars">${RAR.map((r,i)=>`<div class="rb" style="--rc:${r.color}"><span>${r.name}</span><div><i style="width:${st.rc[i]/tot*100}%"></i></div><em>${st.rc[i]}×</em></div>`).join('')}</div>
  <div class="bar"><button class="btn warn" id="reset">${confirmReset?'⚠️ Wirklich alles zurücksetzen?':'🔄 Spielstand zurücksetzen'}</button></div>`;
- $('#reset').onclick=()=>{if(!confirmReset){confirmReset=1;renderStats();return}confirmReset=0;const snd=S.snd,fast=S.fast;S={bal:50,inv:[],lastFree:0,hist:[],uid:1,fast,snd,st:{opened:0,spent:0,won:0,sold:0,rc:[0,0,0,0,0,0],best:null}};shownBal=50;save();renderTop();renderHist();renderStats();toast('Neustart mit 50 $')};
+ $('#reset').onclick=()=>{if(!confirmReset){confirmReset=1;renderStats();return}confirmReset=0;const snd=S.snd,fast=S.fast;S={bal:50,inv:[],lastFree:0,hist:[],uid:1,fast,snd,cheat:S.cheat,luck:1,force:null,forceAlways:false,inf:false,st:{opened:0,spent:0,won:0,sold:0,rc:[0,0,0,0,0,0],best:null}};shownBal=50;save();renderTop();renderHist();renderStats();toast('Neustart mit 50 $')};
 }
 
 /* ================== TOGGLES / INIT ================== */
-function updTog(){$('#tFast').classList.toggle('on',S.fast);$('#tSnd').classList.toggle('on',S.snd);$('#tSnd').textContent=S.snd?'🔊 Sound':'🔇 Sound'}
+function updTog(){$('#tCheat').classList.toggle('on',!!S.cheat);$('#tFast').classList.toggle('on',S.fast);$('#tSnd').classList.toggle('on',S.snd);$('#tSnd').textContent=S.snd?'🔊 Sound':'🔇 Sound'}
 $('#tFast').onclick=()=>{S.fast=!S.fast;save();updTog()};
 $('#tSnd').onclick=()=>{S.snd=!S.snd;save();updTog()};
+/* ================== CHEAT-MENÜ ================== */
+const cm=$('#cm');let cmClear=0;
+function openCm(){if(spinning)return;cmClear=0;renderCm();cm.classList.add('show');const i=$('#cmCode');if(i)setTimeout(()=>i.focus(),50)}
+function closeCm(){cm.classList.remove('show');updTog();if(tab==='case'&&!spinning)openCaseView(curCase);else if(tab==='inv')renderInv();else if(tab==='cases')renderCases()}
+function cmDone(msg){save();renderTop();renderCm();updTog();if(msg)toast(msg)}
+function giveRand(r){const pool=[];CASES.forEach(c=>c.items.forEach(t=>{if(t.r===r)pool.push(t)}));const t=pool[Math.floor(Math.random()*pool.length)];S.inv.unshift({uid:S.uid++,ci:t.ci,ii:t.ii,w:0,kc:t.type==='knife'?0:1,ts:Date.now()});return t}
+function renderCm(){
+ const b=$('#cmBody');
+ if(!S.cheat){
+  b.innerHTML=`<h2>🔑 Code eingeben</h2><div class="cm-sub">Gib den geheimen Code ein, um das Cheat-Menü freizuschalten.</div>
+  <form id="cmForm"><div class="row"><input class="code" id="cmCode" autocomplete="off" placeholder="••••"></div><div class="row"><button class="go">🔓 Freischalten</button></div><div class="err" id="cmErr"></div></form>`;
+  $('#cmForm').onsubmit=e=>{e.preventDefault();const v=$('#cmCode').value.trim();
+   if(v.toLowerCase()==='till'){S.cheat=true;cmDone('🛠️ Cheat-Menü freigeschaltet!');tone(660,.15,'triangle',.15);tone(990,.3,'triangle',.15,.12)}
+   else{$('#cmErr').textContent='❌ Falscher Code';$('#cmCode').value='';tone(160,.25,'square',.08)}};
+  return;
+ }
+ b.innerHTML=`<h2>🛠️ Cheat-Menü</h2><div class="cm-sub">Guthaben: <b style="color:var(--ok)">${fmt(S.bal)}</b></div>
+ <h4>💵 Geld</h4>
+ <div class="row">${[1000,10000,100000,1000000].map(v=>`<button data-add="${v}">+${v.toLocaleString('de-DE')} $</button>`).join('')}</div>
+ <div class="row" style="margin-top:6px"><input type="number" id="cmSet" placeholder="Betrag" min="0"><button id="cmSetB">Guthaben setzen</button></div>
+ <div class="row" style="margin-top:6px"><button id="cmInf" class="${S.inf?'on':''}">♾️ Unendlich Geld: ${S.inf?'AN':'AUS'}</button></div>
+ <h4>🍀 Glück (Episch, Legendär & Mythisch öfter)</h4>
+ <div class="row">${[1,2,5,10,50].map(v=>`<button data-luck="${v}" class="${S.luck===v?'on':''}">×${v}</button>`).join('')}</div>
+ <h4>🎯 Drop erzwingen</h4>
+ <div class="row"><button data-force="-1" class="${S.force==null?'on':''}">Aus</button>${RAR.map((r,i)=>`<button class="rar ${S.force===i?'on':''}" style="--rc:${r.color}" data-force="${i}">${r.name}</button>`).join('')}</div>
+ <div class="row" style="margin-top:6px"><button id="cmAlways" class="${S.forceAlways?'on':''}">🔁 ${S.forceAlways?'Bei jeder Kiste':'Nur nächste Kiste'}</button></div>
+ <h4>⚡ Sonstiges</h4>
+ <div class="row"><button id="cmFree">⏱️ Gratis-Kiste sofort bereit</button><button id="cmMyth">🟡 Mythischen Skin geben</button><button id="cmLeg">🔴 Legendären Skin geben</button></div>
+ <div class="row" style="margin-top:6px"><button class="red" id="cmClear">${cmClear?'⚠️ Sicher? Nochmal klicken':'🗑️ Inventar leeren'}</button><button class="red" id="cmLock">🔒 Cheat-Menü sperren</button></div>`;
+ b.querySelectorAll('[data-add]').forEach(x=>x.onclick=()=>{S.bal=r2(S.bal+ +x.dataset.add);cmDone(`💵 +${fmt(+x.dataset.add)}`)});
+ $('#cmSetB').onclick=()=>{const v=parseFloat($('#cmSet').value);if(isNaN(v)||v<0)return;S.bal=r2(v);cmDone(`💵 Guthaben: ${fmt(S.bal)}`)};
+ $('#cmInf').onclick=()=>{S.inf=!S.inf;cmDone(S.inf?'♾️ Unendlich Geld AN':'♾️ Unendlich Geld AUS')};
+ b.querySelectorAll('[data-luck]').forEach(x=>x.onclick=()=>{S.luck=+x.dataset.luck;cmDone(`🍀 Glück ×${S.luck}`)});
+ b.querySelectorAll('[data-force]').forEach(x=>x.onclick=()=>{const v=+x.dataset.force;S.force=v<0?null:v;cmDone(v<0?'🎯 Erzwingen aus':`🎯 ${RAR[v].name} erzwungen`)});
+ $('#cmAlways').onclick=()=>{S.forceAlways=!S.forceAlways;cmDone()};
+ $('#cmFree').onclick=()=>{S.lastFree=0;cmDone('⏱️ Gratis-Kiste ist bereit')};
+ $('#cmMyth').onclick=()=>{const t=giveRand(5);cmDone(`🟡 ${t.w} | ${t.n} ins Inventar`)};
+ $('#cmLeg').onclick=()=>{const t=giveRand(4);cmDone(`🔴 ${t.w} | ${t.n} ins Inventar`)};
+ $('#cmClear').onclick=()=>{if(!cmClear){cmClear=1;renderCm();return}cmClear=0;S.inv=[];cmDone('🗑️ Inventar geleert')};
+ $('#cmLock').onclick=()=>{S.cheat=false;S.inf=false;S.luck=1;S.force=null;S.forceAlways=false;cmDone('🔒 Cheat-Menü gesperrt')};
+}
+$('#tCheat').onclick=openCm;$('#cmX').onclick=closeCm;
+cm.addEventListener('click',e=>{if(e.target===cm)closeCm()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&cm.classList.contains('show'))closeCm()});
+
 updTog();renderTop();renderHist();show('cases');
 </script>
 </body>

@@ -40,14 +40,14 @@ Version 0.1 · Open Beta
 
 | Seltenheit | Chance |
 |---|---|
-| ⚪ Gewöhnlich | 55 % |
-| 🔵 Selten | 25 % |
-| 🟣 Super selten | 12 % |
-| 🩷 Episch | 5,5 % |
-| 🔴 Legendär | 2 % |
-| 🟡 Mythisch | 0,5 % |
+| ⚪ Gewöhnlich | 45 % |
+| 🔵 Selten | 27 % |
+| 🟣 Super selten | 15 % |
+| 🩷 Episch | 8 % |
+| 🔴 Legendär | 4 % |
+| 🟡 Mythisch | 1 % |
 
-Mythische Drops können bis zu **50× den Kistenpreis** wert sein! 🤑
+Mythische Drops können bis zu **40× den Kistenpreis** wert sein! 🤑
 
 ## Steuerung
 
