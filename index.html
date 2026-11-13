@@ -395,8 +395,9 @@ let shownBal=S.bal;
 function renderTop(){
  const target=S.bal,from=shownBal,t0=performance.now();
  (function an(n){const k=Math.min(1,(n-t0)/400);shownBal=from+(target-from)*k;$('#bal').textContent=fmt(shownBal);if(k<1)requestAnimationFrame(an)})(t0);
- $('#invVal').textContent=fmt(S.inv.reduce((a,i)=>a+val(i),0));
- $('#invCnt').textContent=S.inv.length;
+ const vis=S.inv.filter(i=>i.uid!==pendingUid);
+ $('#invVal').textContent=fmt(vis.reduce((a,i)=>a+val(i),0));
+ $('#invCnt').textContent=vis.length;
 }
 function renderHist(){
  const h=$('#hist');
@@ -406,7 +407,7 @@ function renderHist(){
 function toast(m){document.querySelectorAll('.toast').forEach(t=>t.remove());const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
 
 /* ================== TABS ================== */
-let tab='cases',curCase=null,spinning=false;
+let tab='cases',curCase=null,spinning=false,pendingUid=null;
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{if(spinning)return;show(b.dataset.tab)});
 function show(t){
  tab=t;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t||(t==='case'&&b.dataset.tab==='cases')));
@@ -499,7 +500,7 @@ function openCase(){
  S.inv.unshift(inst);S.st.opened++;S.st.rc[t.r]++;const v=val(inst);S.st.won+=v;
  if(!S.st.best||v>val(S.st.best))S.st.best=inst;
  save();
- spinning=true;renderTop();
+ spinning=true;pendingUid=inst.uid;renderTop();
  const b=$('#openBtn');b.disabled=true;b.textContent='🎰 Öffne …';$('#backBtn').disabled=true;$('#openHint').textContent='';
  fillReel(t);
  const reel=$('#reel'),cards=reel.children,w=$('#reelbox').clientWidth,cw=CW(),step=cw+GAP;
@@ -517,7 +518,7 @@ function openCase(){
  requestAnimationFrame(frame);
 }
 function finish(inst){
- spinning=false;$('#backBtn').disabled=false;
+ spinning=false;pendingUid=null;$('#backBtn').disabled=false;
  S.hist.unshift({ci:inst.ci,ii:inst.ii});S.hist=S.hist.slice(0,24);save();
  renderHist();updOpenBtn();reveal(inst);
 }
