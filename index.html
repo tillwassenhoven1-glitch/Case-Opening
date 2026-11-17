@@ -211,22 +211,6 @@ nav button .cnt{background:var(--acc);color:#111;border-radius:20px;padding:0 7p
 .cm .err{color:#ff5470;font-size:14px;min-height:20px;margin-top:8px;text-align:center}
 .cm .cm-sub{color:var(--mut);font-size:14px}
 .hidden{display:none!important}
-/* ===== Konto / Login ===== */
-.lg{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;background:radial-gradient(circle at 50% 20%,#1b2340,#0a0d16 70%)}
-.lg-box{width:100%;max-width:380px;background:linear-gradient(180deg,#161c30,#0f1424);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
-.lg-logo{font-size:26px;font-weight:900;text-align:center;margin-bottom:14px;letter-spacing:1px}
-.lg-tabs{display:flex;gap:6px;margin-bottom:12px}
-.lg-tabs button{flex:1;background:var(--p2);border:1px solid var(--line);padding:9px;border-radius:9px;color:var(--mut);font-weight:800;font-size:15px}
-.lg-tabs button.on{color:#fff;border-color:var(--acc);box-shadow:inset 0 -2px 0 var(--acc)}
-.lg input{width:100%;background:var(--p2);border:1px solid var(--line);padding:11px 12px;border-radius:9px;font-size:16px;color:var(--txt);font-family:inherit;margin-bottom:8px}
-.lg input:focus{outline:none;border-color:var(--acc)}
-.lg .go{width:100%;border:0;border-radius:10px;background:linear-gradient(180deg,#ffb21f,#ff6a00);color:#1a0d00;font-size:17px;font-weight:900;padding:12px;margin-top:4px}
-.lg .go:disabled{opacity:.6}
-.lg .sec{width:100%;background:var(--p2);border:1px solid var(--line);color:var(--mut);border-radius:10px;padding:10px;font-weight:700;margin-top:8px}
-.lg .err{color:#ff5470;font-size:14px;min-height:20px;margin-top:8px;text-align:center}
-.lg .note{color:var(--mut);font-size:12.5px;margin-top:12px;line-height:1.45;text-align:center}
-.lg .ok{color:var(--ok)}
-#tAcc.off{border-color:#a3223f;color:#ffb3c2}
 @media(max-width:640px){
  .logo{font-size:19px}.bal b{font-size:18px}nav{order:5;width:100%;margin:0}
  .reel .card{flex-basis:120px}.ov.r5 .rv-rar{font-size:40px}.ov.r4 .rv-rar{font-size:32px}.rv-name{font-size:22px}
@@ -243,7 +227,6 @@ nav button .cnt{background:var(--acc);color:#111;border-radius:20px;padding:0 7p
       <button data-tab="stats">📊 Statistik</button>
     </nav>
     <div class="spacer"></div>
-    <button class="tog" id="tAcc" title="Konto">👤</button>
     <button class="tog" id="tCheat" title="Cheat-Menü">🔑</button>
     <button class="tog" id="tFast" title="Schnelles Öffnen">⚡ Schnell</button>
     <button class="tog on" id="tSnd" title="Sound">🔊 Sound</button>
@@ -260,19 +243,6 @@ nav button .cnt{background:var(--acc);color:#111;border-radius:20px;padding:0 7p
 </div>
 
 <div class="cm" id="cm"><div class="cm-box"><button class="cm-x" id="cmX">✕</button><div id="cmBody"></div></div></div>
-<div class="lg" id="login"><div class="lg-box">
-  <div class="lg-logo">📦 CASE RUSH</div>
-  <div class="lg-tabs"><button type="button" data-m="in" class="on">Anmelden</button><button type="button" data-m="reg">Registrieren</button></div>
-  <form id="lgForm" autocomplete="on">
-    <input id="lgName" placeholder="Benutzername" maxlength="18" autocomplete="username" autocapitalize="off" spellcheck="false">
-    <input id="lgPw" type="password" placeholder="Passwort" autocomplete="current-password">
-    <input id="lgPw2" type="password" placeholder="Passwort wiederholen" autocomplete="new-password" class="hidden">
-    <button class="go" id="lgGo">🔓 Anmelden</button>
-    <div class="err" id="lgErr"></div>
-  </form>
-  <div class="note" id="lgNote"></div>
-</div></div>
-<div class="lg hidden" id="lgAcc"><div class="lg-box" id="lgAccBody"></div></div>
 <div class="ver">Version 0.2.1 · Open Beta</div>
 
 <div class="ov" id="ov">
@@ -402,8 +372,7 @@ let S={bal:50,inv:[],lastFree:0,hist:[],uid:1,fast:false,snd:true,cheat:false,lu
 try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&typeof d.bal==='number')S=Object.assign(S,d)}catch(e){}
 /* Neuer Cheat-Code (v2): alte Freischaltungen wieder sperren */
 if(S.cheat&&S.cheatV!==2){S.cheat=false;S.inf=false;S.luck=1;S.force=null;S.forceAlways=false}
-function save(){accSave()}
-const defS=()=>({bal:50,inv:[],lastFree:0,hist:[],uid:1,fast:false,snd:true,cheat:false,luck:1,force:null,forceAlways:false,inf:false,st:{opened:0,spent:0,won:0,sold:0,rc:[0,0,0,0,0,0],best:null}});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const tpl=i=>CASES[i.ci].items[i.ii];
 const val=i=>r2(tpl(i).v*WEAR[i.w].m*(i.kc?1.5:1));
 const fmt=v=>v.toLocaleString('de-DE',{style:'currency',currency:'USD'});
@@ -658,7 +627,7 @@ function renderStats(){
  ${st.best?`<div class="sec-title"><h2>🏆 Bester Drop</h2></div><div class="grid" style="max-width:220px">${cardHTML(tpl(st.best),`<div class="cfoot"><span class="cval">${fmt(val(st.best))}</span></div>`,st.best)}</div>`:''}
  <div class="rbars">${RAR.map((r,i)=>`<div class="rb" style="--rc:${r.color}"><span>${r.name}</span><div><i style="width:${st.rc[i]/tot*100}%"></i></div><em>${st.rc[i]}×</em></div>`).join('')}</div>
  <div class="bar"><button class="btn warn" id="reset">${confirmReset?'⚠️ Wirklich alles zurücksetzen?':'🔄 Spielstand zurücksetzen'}</button></div>`;
- $('#reset').onclick=()=>{if(!confirmReset){confirmReset=1;renderStats();return}confirmReset=0;const snd=S.snd,fast=S.fast;S={bal:50,inv:[],lastFree:0,hist:[],uid:1,fast,snd,cheat:S.cheat,cheatV:S.cheatV,luck:1,force:null,forceAlways:false,inf:false,st:{opened:0,spent:0,won:0,sold:0,rc:[0,0,0,0,0,0],best:null}};shownBal=50;save();renderTop();renderHist();renderStats();toast('Neustart mit 50 $')};
+ $('#reset').onclick=()=>{if(!confirmReset){confirmReset=1;renderStats();return}confirmReset=0;const snd=S.snd,fast=S.fast;S={bal:50,inv:[],lastFree:0,hist:[],uid:1,fast,snd,cheat:S.cheat,luck:1,force:null,forceAlways:false,inf:false,st:{opened:0,spent:0,won:0,sold:0,rc:[0,0,0,0,0,0],best:null}};shownBal=50;save();renderTop();renderHist();renderStats();toast('Neustart mit 50 $')};
 }
 
 /* ================== TOGGLES / INIT ================== */
@@ -712,196 +681,6 @@ cm.addEventListener('click',e=>{if(e.target===cm)closeCm()});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&cm.classList.contains('show'))closeCm()});
 
 updTog();renderTop();renderHist();show('cases');
-
-/* ================== KONTO-SYSTEM (Firestore REST) ================== */
-/* 👉 Hier deine Firebase-Werte eintragen (Projekteinstellungen → Allgemein → Meine Apps → Web-App) */
-const ONLINE = { projectId: '', apiKey: '' };
-const GAME = 'caserush';                       // eigener Name pro Spiel
-const COL_N = GAME + '_namen', COL_K = GAME + '_konten';
-const ACC_KEY = GAME + '_accounts', CUR_KEY = GAME + '_current', MIG_KEY = GAME + '_migrated';
-const onlineOn = () => !!(ONLINE.projectId && ONLINE.apiKey);
-const fsBase = () => `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(ONLINE.projectId)}/databases/(default)/documents`;
-const fsKey = () => 'key=' + encodeURIComponent(ONLINE.apiKey);
-
-async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-const mkSalt=()=>[...crypto.getRandomValues(new Uint8Array(16))].map(x=>x.toString(16).padStart(2,'0')).join('');
-const pwHash=(salt,pw)=>sha(salt+'::'+pw);
-const mkCid=async(nk,pw)=>'k'+(await sha(GAME+'-cloud1|'+nk+'::'+pw)).slice(0,40);
-
-function accAll(){try{return JSON.parse(localStorage.getItem(ACC_KEY))||{}}catch(e){return{}}}
-function accPut(a){const all=accAll();all[a.name.toLowerCase()]=a;try{localStorage.setItem(ACC_KEY,JSON.stringify(all))}catch(e){}}
-
-/* --- Firestore --- */
-async function fsGet(path){
- const r=await fetch(`${fsBase()}/${path}?${fsKey()}`);
- if(r.status===404)return null;
- if(!r.ok)throw new Error('HTTP '+r.status);
- return r.json();
-}
-async function nameTaken(nk){return !!(await fsGet(`${COL_N}/${encodeURIComponent(nk)}`))}
-async function nameClaim(nk){
- const r=await fetch(`${fsBase()}/${COL_N}?documentId=${encodeURIComponent(nk)}&${fsKey()}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{t:{integerValue:String(Date.now())}}})});
- if(r.status===409)throw new Error('taken');
- if(!r.ok)throw new Error('HTTP '+r.status);
-}
-async function cloudLoad(cid){
- const d=await fsGet(`${COL_K}/${cid}`);
- if(!d||!d.fields)return null;
- try{const o=JSON.parse(d.fields.data.stringValue);o.ts=+((d.fields.ts||{}).integerValue||0);return o}catch(e){return null}
-}
-function cloudSave(a){ /* kein await vor fetch → klappt auch beim Schließen der Seite */
- const body=JSON.stringify({fields:{data:{stringValue:JSON.stringify({name:a.name,created:a.created,save:a.save})},ts:{integerValue:String(a.ts||Date.now())}}});
- return fetch(`${fsBase()}/${COL_K}/${a.cid}?${fsKey()}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body,keepalive:body.length<60000})
-  .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status)});
-}
-
-/* --- Status / Speichern --- */
-let ACC=null,dirty=false,pushT=0,netBad=false;
-function setNet(bad){
- if(bad&&!netBad)toast('⚠️ Online-Speichern gerade nicht möglich – lokal gespeichert');
- netBad=bad;updAccBtn();
-}
-function updAccBtn(){const b=$('#tAcc');if(!b)return;b.textContent=ACC?'👤 '+ACC.name+(netBad?' ⚠️':''):'👤';b.classList.toggle('off',netBad)}
-function accSave(){
- if(!ACC)return;
- ACC.save=JSON.parse(JSON.stringify(S));ACC.ts=Date.now();accPut(ACC);
- dirty=true;
- if(onlineOn()&&ACC.cid&&!pushT)pushT=setTimeout(()=>{pushT=0;pushNow()},12000);
-}
-function pushNow(){
- if(pushT){clearTimeout(pushT);pushT=0}
- if(!dirty||!ACC||!ACC.cid||!onlineOn())return Promise.resolve();
- dirty=false;
- return cloudSave(ACC).then(()=>setNet(false)).catch(()=>{dirty=true;setNet(true)});
-}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')pushNow()});
-addEventListener('pagehide',()=>pushNow());
-
-/* --- Spielstand übernehmen --- */
-function applySave(sv){
- S=Object.assign(defS(),JSON.parse(JSON.stringify(sv||{})));
- if(S.cheat&&S.cheatV!==2){S.cheat=false;S.inf=false;S.luck=1;S.force=null;S.forceAlways=false}
- shownBal=S.bal;updTog();renderTop();renderHist();show('cases');
-}
-function enter(a){
- ACC=a;accPut(a);
- try{localStorage.setItem(CUR_KEY,a.name.toLowerCase())}catch(e){}
- applySave(a.save);
- $('#login').classList.add('hidden');updAccBtn();
-}
-
-/* --- Login-Bildschirm --- */
-let lgMode='in';
-function lgSet(m){
- lgMode=m;
- document.querySelectorAll('.lg-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
- $('#lgPw2').classList.toggle('hidden',m!=='reg');
- $('#lgPw').autocomplete=m==='reg'?'new-password':'current-password';
- $('#lgGo').textContent=m==='reg'?'✨ Konto erstellen':'🔓 Anmelden';
- $('#lgErr').textContent='';
-}
-document.querySelectorAll('.lg-tabs button').forEach(b=>b.onclick=()=>lgSet(b.dataset.m));
-$('#lgNote').innerHTML='🔒 Passwort gut merken – es kann <b>nicht</b> wiederhergestellt werden.'+
- (onlineOn()?'<br><span class="ok">☁️ Spielstand wird online gespeichert – Anmelden auf jedem Gerät möglich.</span>'
-            :'<br>⚠️ Online-Speichern ist noch nicht eingerichtet – Konto gilt nur auf diesem Gerät.');
-function lgErr(t){$('#lgErr').textContent=t}
-
-$('#lgForm').onsubmit=async e=>{
- e.preventDefault();
- const name=$('#lgName').value.trim(),pw=$('#lgPw').value,nk=name.toLowerCase();
- if(!/^[A-Za-z0-9_\-äöüÄÖÜß]{3,18}$/.test(name))return lgErr('Name: 3–18 Zeichen (Buchstaben, Zahlen, _ oder -)');
- if(pw.length<4)return lgErr('Passwort: mindestens 4 Zeichen');
- lgErr('');$('#lgGo').disabled=true;const label=$('#lgGo').textContent;$('#lgGo').textContent='⏳ Bitte warten …';
- try{ lgMode==='reg'?await doRegister(name,nk,pw):await doLogin(name,nk,pw) }
- catch(err){lgErr(err.message||'Fehler – bitte nochmal versuchen')}
- $('#lgGo').disabled=false;$('#lgGo').textContent=label;
-};
-
-async function doRegister(name,nk,pw){
- if(pw!==$('#lgPw2').value)throw new Error('Die Passwörter sind nicht gleich');
- if(accAll()[nk])throw new Error('Dieser Name ist schon vergeben');
- const cid=await mkCid(nk,pw);
- if(onlineOn()){
-  try{ if(await nameTaken(nk))throw new Error('taken'); await nameClaim(nk) }
-  catch(err){ if(err.message==='taken')throw new Error('Dieser Name ist schon vergeben'); throw new Error('Keine Verbindung zum Server – bitte später nochmal') }
- }
- /* alter Spielstand (von vor dem Konto-System) wird ins erste Konto übernommen */
- let sv=null;
- try{ if(!localStorage.getItem(MIG_KEY)){const old=JSON.parse(localStorage.getItem(KEY));if(old&&typeof old.bal==='number')sv=old;localStorage.setItem(MIG_KEY,'1')} }catch(e){}
- const salt=mkSalt();
- const a={name,salt,hash:await pwHash(salt,pw),created:Date.now(),save:sv||defS(),cid,ts:Date.now()};
- enter(a);
- if(onlineOn())cloudSave(a).then(()=>setNet(false)).catch(()=>{dirty=true;setNet(true)});
- toast(sv?'✨ Konto erstellt – dein alter Spielstand wurde übernommen':'✨ Konto erstellt – viel Glück!');
-}
-
-async function doLogin(name,nk,pw){
- const loc=accAll()[nk];
- const locOk=!!(loc&&await pwHash(loc.salt,pw)===loc.hash);
- const cid=await mkCid(nk,pw);
- let on=null,netFail=false;
- if(onlineOn()){try{on=await cloudLoad(cid)}catch(e){netFail=true}}
- if(!locOk&&!on){
-  if(netFail)throw new Error('Keine Verbindung zum Server – bitte später nochmal');
-  throw new Error('Name oder Passwort falsch');
- }
- let a;
- if(locOk){a=Object.assign({},loc,{cid});if(on&&on.ts>(loc.ts||0)){a.save=on.save;a.ts=on.ts}}
- else{const salt=mkSalt();a={name:on.name||name,salt,hash:await pwHash(salt,pw),created:on.created||Date.now(),save:on.save,cid,ts:on.ts}}
- enter(a);
- if(netFail)setNet(true);
- else if(onlineOn()&&(!on||a.ts>on.ts)){dirty=true;pushNow()}
- toast('👋 Willkommen zurück, '+a.name+'!');
-}
-
-/* --- Konto-Fenster (Abmelden) + "Konto online sichern" --- */
-function accClose(){$('#lgAcc').classList.add('hidden')}
-$('#lgAcc').addEventListener('click',e=>{if(e.target.id==='lgAcc')accClose()});
-function openAcc(){
- if(!ACC||spinning)return;
- const st=!onlineOn()?'⚠️ Online-Speichern nicht eingerichtet (nur dieses Gerät)':!ACC.cid?'⚠️ Noch nicht online gesichert':netBad?'⚠️ Gerade offline – wird später hochgeladen':'<span class="ok">☁️ Online gesichert</span>';
- $('#lgAccBody').innerHTML=`<div class="lg-logo">👤 ${ACC.name}</div><div class="note" style="margin:0 0 12px">${st}</div>
-  ${onlineOn()&&ACC.cid?'<button class="go" id="aSync">☁️ Jetzt speichern</button>':''}
-  ${onlineOn()&&!ACC.cid?'<button class="go" id="aSec">☁️ Konto online sichern</button>':''}
-  <button class="sec" id="aOut">🚪 Abmelden</button><button class="sec" id="aX">Schließen</button>`;
- $('#lgAcc').classList.remove('hidden');
- $('#aX').onclick=accClose;
- if($('#aSync'))$('#aSync').onclick=async()=>{accSave();await pushNow();accClose();toast(netBad?'⚠️ Speichern fehlgeschlagen':'☁️ Gespeichert')};
- if($('#aSec'))$('#aSec').onclick=openSecure;
- $('#aOut').onclick=async()=>{accSave();await pushNow();try{localStorage.removeItem(CUR_KEY)}catch(e){}location.reload()};
-}
-function openSecure(){
- $('#lgAccBody').innerHTML=`<div class="lg-logo">☁️ Konto online sichern</div>
-  <div class="note" style="margin:0 0 12px">Gib einmal dein Passwort für <b>${ACC.name}</b> ein, damit dein Spielstand online gespeichert wird und du dich auf jedem Gerät anmelden kannst.</div>
-  <form id="secF"><input id="secPw" type="password" placeholder="Passwort" autocomplete="current-password"><button class="go">☁️ Sichern</button><div class="err" id="secErr"></div></form>
-  <button class="sec" id="secLater">Später</button>`;
- $('#lgAcc').classList.remove('hidden');
- $('#secLater').onclick=accClose;
- $('#secF').onsubmit=async e=>{
-  e.preventDefault();const pw=$('#secPw').value;
-  if(await pwHash(ACC.salt,pw)!==ACC.hash){$('#secErr').textContent='❌ Falsches Passwort';return}
-  const nk=ACC.name.toLowerCase();
-  try{ if(await nameTaken(nk)){$('#secErr').textContent='❌ Der Name ist online schon vergeben – bitte neues Konto erstellen';return} await nameClaim(nk) }
-  catch(err){$('#secErr').textContent='⚠️ Keine Verbindung – versuch es später';return}
-  ACC.cid=await mkCid(nk,pw);accSave();await pushNow();accClose();toast('☁️ Konto online gesichert!');
- };
-}
-$('#tAcc').onclick=openAcc;
-
-/* --- Start: automatisch einloggen --- */
-(async()=>{
- let nk=null;try{nk=localStorage.getItem(CUR_KEY)}catch(e){}
- const a=nk&&accAll()[nk];
- if(!a){lgSet('in');setTimeout(()=>$('#lgName').focus(),50);return}
- enter(a);
- if(!onlineOn())return;
- if(!a.cid){setTimeout(openSecure,800);return}
- try{
-  const on=await cloudLoad(a.cid);setNet(false);
-  if(on&&on.ts>(a.ts||0)+5000&&!spinning&&ACC===a){a.save=on.save;a.ts=on.ts;accPut(a);applySave(a.save);toast('☁️ Neuerer Online-Spielstand geladen')}
-  else if(!on||(a.ts||0)>on.ts){dirty=true;pushNow()}
- }catch(e){setNet(true)}
-})();
 </script>
 </body>
 </html>
