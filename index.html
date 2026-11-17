@@ -370,6 +370,8 @@ function crateSVG(cs){
 const KEY='caserush_v1';
 let S={bal:50,inv:[],lastFree:0,hist:[],uid:1,fast:false,snd:true,cheat:false,luck:1,force:null,forceAlways:false,inf:false,st:{opened:0,spent:0,won:0,sold:0,rc:[0,0,0,0,0,0],best:null}};
 try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&typeof d.bal==='number')S=Object.assign(S,d)}catch(e){}
+/* Neuer Cheat-Code (v2): alte Freischaltungen wieder sperren */
+if(S.cheat&&S.cheatV!==2){S.cheat=false;S.inf=false;S.luck=1;S.force=null;S.forceAlways=false}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const tpl=i=>CASES[i.ci].items[i.ii];
 const val=i=>r2(tpl(i).v*WEAR[i.w].m*(i.kc?1.5:1));
@@ -643,8 +645,9 @@ function renderCm(){
  if(!S.cheat){
   b.innerHTML=`<h2>🔑 Code eingeben</h2><div class="cm-sub">Gib den geheimen Code ein, um das Cheat-Menü freizuschalten.</div>
   <form id="cmForm"><div class="row"><input class="code" id="cmCode" autocomplete="off" placeholder="••••"></div><div class="row"><button class="go">🔓 Freischalten</button></div><div class="err" id="cmErr"></div></form>`;
-  $('#cmForm').onsubmit=e=>{e.preventDefault();const v=$('#cmCode').value.trim();
-   if(v.toLowerCase()==='till'){S.cheat=true;cmDone('🛠️ Cheat-Menü freigeschaltet!');tone(660,.15,'triangle',.15);tone(990,.3,'triangle',.15,.12)}
+  $('#cmForm').onsubmit=async e=>{e.preventDefault();const v=$('#cmCode').value.trim();
+   let h='';try{const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));h=[...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(_){}
+   if(h==='0e21c41b87897cd5504f8dcd54e4ed33428a105a8e7fc072dc083865d675994b'){S.cheat=true;S.cheatV=2;cmDone('🛠️ Cheat-Menü freigeschaltet!');tone(660,.15,'triangle',.15);tone(990,.3,'triangle',.15,.12)}
    else{$('#cmErr').textContent='❌ Falscher Code';$('#cmCode').value='';tone(160,.25,'square',.08)}};
   return;
  }
